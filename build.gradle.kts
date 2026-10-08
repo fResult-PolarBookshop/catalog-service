@@ -6,7 +6,7 @@ plugins {
     java
     id("org.springframework.boot") version "4.1.1"
     id("io.spring.dependency-management") version "1.1.7"
-    id("com.diffplug.spotless") version "8.10.1"
+    id("com.diffplug.spotless") version "8.10.3"
 }
 
 group = "com.polarbookshop"
@@ -34,8 +34,9 @@ configurations {
  * Override Spring portfolio to address vulnerabilities reported by Grype.
  * TODO: Remove these overrides once Spring Boot 4.1.2 OR 4.2.0 is released
  */
-extra["tomcat.version"] = "11.0.25"
-extra["jackson-bom.version"] = "3.1.7"
+extra["jacksonAnnotationsVersion"] = "2.22"
+extra["tomcat.version"] = "11.0.26"
+extra["jackson-bom.version"] = "3.2.3"
 
 // === Explicit BOM selection ===
 extra["springCloudVersion"] = "2025.1.3"
@@ -73,6 +74,10 @@ dependencies {
 }
 
 dependencyManagement {
+    dependencies {
+        dependency("com.fasterxml.jackson.core:jackson-annotations:${property("jacksonAnnotationsVersion")}")
+    }
+
     imports {
         mavenBom("org.springframework.cloud:spring-cloud-dependencies:${property("springCloudVersion")}")
     }
@@ -84,16 +89,19 @@ spotless {
             .style("GOOGLE")
             .formatJavadoc(true)
 
-        importOrder()
-        removeUnusedImports()
-
         target("**/*.java")
         targetExclude("**/build/**")
+
+        importOrder()
+        removeUnusedImports()
+        trimTrailingWhitespace()
+        leadingTabsToSpaces()
+        endWithNewline()
     }
 
     kotlinGradle {
         ktlint()
-        target("*.gradle.kts")
+        target("*.gradle.kts", "settings.gradle.kts")
     }
 }
 
