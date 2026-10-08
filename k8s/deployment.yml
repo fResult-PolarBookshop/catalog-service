@@ -34,10 +34,3 @@ spec:
               value: jdbc:postgresql://polar-postgres:5432/polardb_catalog
             - name: SPRING_PROFILES_ACTIVE
               value: testdata
-#          resources:
-#            requests:
-#              memory: 60Mi
-#              cpu: 100m
-#            limits:
-#              memory: 60Mi
-#              cpu: 100m
